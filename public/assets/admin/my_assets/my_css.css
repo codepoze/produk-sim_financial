@@ -1,0 +1,122 @@
+.is-invalid {
+    border: 1px solid #dc3545 !important;
+}
+
+.is-invalid::after {
+    position: absolute;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: #dc3545;
+    font-size: 20px;
+    right: 40px;
+}
+
+.btn-action {
+    width: 100%;
+}
+
+/* begin:: select2 */
+form span.error {
+    width: 100%;
+    font-size: .857rem
+}
+
+form .error:not(input) {
+    color: #ea5455
+}
+
+form .select2.is-invalid+.select2-container--classic .select2-selection--multiple,
+form .select2.is-invalid+.select2-container--classic .select2-selection--single,
+form .select2.is-invalid+.select2-container--default .select2-selection--multiple,
+form .select2.is-invalid+.select2-container--default .select2-selection--single,
+form input.error,
+form input.error:focus,
+form textarea.error {
+    border-color: #ea5455 !important
+}
+
+form .select2.is-valid+.select2-container--classic .select2-selection--multiple,
+form .select2.is-valid+.select2-container--classic .select2-selection--single,
+form .select2.is-valid+.select2-container--default .select2-selection--multiple,
+form .select2.is-valid+.select2-container--default .select2-selection--single {
+    border-color: #28c76f !important
+}
+
+.form-select.is-invalid:not([multiple]):not([size]),
+.form-select.is-invalid:not([multiple])[size='1'],
+.was-validated .form-select:invalid:not([multiple]):not([size]),
+.was-validated .form-select:invalid:not([multiple])[size='1'] {
+    background-position: right 1rem center, center right 2.5rem
+}
+
+/* end:: select2 */
+
+.parsley-errors-list {
+    color: red;
+    list-style-type: none;
+    padding: 0;
+}
+
+.choices {
+    margin-bottom: 0 !important;
+}
+
+/* table */
+.table thead th {
+    background-color: #44bc59 !important;
+    border-color: #fff;
+    color: white;
+}
+
+.table {
+    width: 100%;
+}
+
+/* table */
+
+/* loading */
+.loader {
+    margin-right: auto;
+    margin-left: auto;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #44bc59;
+    width: 90px;
+    height: 90px;
+    -webkit-animation: spin 2s linear infinite;
+    /* Safari */
+    animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.select2-selection__rendered {
+    line-height: 35px !important;
+}
+
+.select2-container .select2-selection--single {
+    height: 35px !important;
+}
+
+.select2-selection__arrow {
+    height: 35px !important;
+}
