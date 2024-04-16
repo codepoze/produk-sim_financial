@@ -8,4 +8,5 @@ return [
     'product'   => 'Produk',
     'all'       => 'Semua',
     'testimony' => 'Testimoni',
+    'login'     => 'Masuk',
 ];

@@ -6,7 +6,7 @@
                     <!-- Navbar -->
                     <nav class="navbar navbar-expand-lg">
                         <a class="navbar-brand logo" href="index.html">
-                            <span>Sof</span>ten.
+                            <img src="{{ asset_admin('images/codepoze-dark.png') }}" alt="CodePoze Logo" height="50">
                         </a>
                         <button class="navbar-toggler ht-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <svg width="100" height="100" viewBox="0 0 100 100">
@@ -27,11 +27,10 @@
                                     <a class="nav-link" href="{{ route('about') }}">{{ __('menu.about') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('auth.login') }}">Login</a>
+                                    <a class="nav-link" href="{{ route('auth.login') }}">{{ __('menu.login') }}</a>
                                 </li>
                             </ul>
                         </div>
-                        <a class="themeht-btn dark-btn" href="#">Buy Now</a>
                     </nav>
                 </div>
             </div>

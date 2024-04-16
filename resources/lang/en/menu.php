@@ -8,4 +8,5 @@ return [
     'product'   => 'Product',
     'all'       => 'All',
     'testimony' => 'Testimony',
+    'login'     => 'Login',
 ];

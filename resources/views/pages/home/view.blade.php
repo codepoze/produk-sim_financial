@@ -27,15 +27,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 mt-8">
-                    <h1 class="mb-4 wow animate__shakeX animate__slow">Modern <span>Software</span> For Business
-                    </h1>
-                    <p class="lead mb-5 wow animate__zoomIn animate__slow">Make your awesome business idea a reality
-                        with Soften, High-performing software solutions that drive your business forward solutions.
-                    </p>
-                    <div class="wow animate__fadeInUp animate__slow">
-                        <a class="themeht-btn" href="#">Get Started</a>
-                        <a class="themeht-btn dark-btn ms-3" href="#">Contact Us</a>
-                    </div>
+                    <h1 class="mb-4 wow animate__shakeX animate__slow">Management <span>Financial</span></h1>
                 </div>
             </div>
         </div>
