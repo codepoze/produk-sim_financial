@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 mt-8">
-                    <h1 class="mb-4 wow animate__shakeX animate__slow">Management <span>Financial</span></h1>
+                    <h1 class="mb-4 wow animate__shakeX animate__slow">Management <span>Money</span></h1>
                 </div>
             </div>
         </div>
