@@ -1,42 +1,15 @@
 <?php
 
-use App\Http\Controllers\admin\BasedController;
 use App\Http\Controllers\admin\CategoryController;
-use App\Http\Controllers\admin\ContactController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\MoneyController;
-use App\Http\Controllers\admin\NotificationController;
-use App\Http\Controllers\admin\PriceController;
-use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ProfilController;
-use App\Http\Controllers\admin\ProjectController;
-use App\Http\Controllers\admin\SocialMediaController;
-use App\Http\Controllers\admin\StackController;
-use App\Http\Controllers\admin\TestimonyController;
-use App\Http\Controllers\admin\TypeController;
-use App\Http\Controllers\admin\VisitorController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\pages\AboutController;
-use App\Http\Controllers\pages\ContactsController;
-use App\Http\Controllers\pages\HomeController;
-use App\Http\Controllers\pages\ProductsController;
-use App\Http\Controllers\pages\SopController;
-use App\Http\Controllers\pages\TestimoniesController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/lang/{locale}', function () {
-    session()->put('locale', request()->segment(2));
-    return redirect()->back();
-})->name('lang');
-
 Route::group(['middleware' => ['guest', 'set.locale']], function () {
-    // begin:: no auth
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/about', [AboutController::class, 'index'])->name('about');
-    // end:: no auth
-
     // begin:: auth
-    Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::get('/', [AuthController::class, 'login'])->name('home');
     Route::post('/check', [AuthController::class, 'check'])->name('auth.check');
     // end:: auth
 });
@@ -60,7 +33,6 @@ Route::group(
             Route::post('/count_expense', [DashboardController::class, 'count_expense'])->name('count_expense');
             Route::post('/count_balance', [DashboardController::class, 'count_balance'])->name('count_balance');
         });
-
 
         // begin:: profil
         Route::controller(ProfilController::class)->prefix('profil')->as('profil.')->group(function () {

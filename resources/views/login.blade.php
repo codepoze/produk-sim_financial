@@ -9,7 +9,7 @@
     <meta name="description" content="CodePoze">
     <meta name="keywords" content="CodePoze">
     <meta name="author" content="CodePoze">
-    <title>CodePoze | {{ $title }}</title>
+    <title>{{ config('app.name') }} | {{ $title }}</title>
 
     <!-- begin:: icon -->
     <link rel="apple-touch-icon" href="{{ asset_admin('images/icon/apple-touch-icon.png') }}" sizes="180x180" />
