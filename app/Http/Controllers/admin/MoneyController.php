@@ -24,7 +24,7 @@ class MoneyController extends Controller
 
     public function list()
     {
-        $data = Money::latest()->get();
+        $data = Money::where('id_users', $this->session['id_users'])->latest()->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
