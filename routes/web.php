@@ -21,7 +21,7 @@ Route::group(
         'prefix'     => 'admin',
         'as'         => 'admin.',
         'middleware' => [
-            'session.auth',
+            'auth.session',
             'prevent.back.history'
         ],
     ],

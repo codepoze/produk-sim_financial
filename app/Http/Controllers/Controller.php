@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
-class Controller extends BaseController
+abstract class Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     // deklarasi variabel global session
     public $session;
 
     public function __construct()
     {
         // untuk session user
-        $this->session  = session()->all();
+        $this->session = Auth::user();
     }
 }

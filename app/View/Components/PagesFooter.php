@@ -16,6 +16,8 @@ class PagesFooter extends Component
 
     public function __construct()
     {
+        // untuk social media
+        $this->social_media = SocialMedia::all();
     }
 
     /**

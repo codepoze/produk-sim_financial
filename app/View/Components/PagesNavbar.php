@@ -16,6 +16,8 @@ class PagesNavbar extends Component
 
     public function __construct()
     {
+        // untuk produk
+        $this->type = Type::all();
     }
 
     /**
