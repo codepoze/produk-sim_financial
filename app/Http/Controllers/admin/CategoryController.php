@@ -24,6 +24,9 @@ class CategoryController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
+            ->addColumn('type', function ($row) {
+                return ucfirst($row->type);
+            })
             ->addColumn('action', function ($row) {
                 return '
                     <button type="button" id="upd" data-id="' . my_encrypt($row->id_category) . '" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-add-upd" data-bs-backdrop="static" data-bs-keyboard="false"><i class="fa fa-edit"></i>&nbsp;Ubah</button>&nbsp;
