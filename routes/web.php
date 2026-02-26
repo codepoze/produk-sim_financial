@@ -46,7 +46,8 @@ Route::group(
         // begin:: category
         Route::controller(CategoryController::class)->prefix('category')->as('category.')->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/get_data_dt', 'get_data_dt')->name('get_data_dt');
+            Route::get('/get', 'get')->name('get');
+            Route::get('/list', 'list')->name('list');
             Route::post('/show', 'show')->name('show');
             Route::post('/save', 'save')->name('save');
             Route::post('/del', 'del')->name('del');
@@ -56,7 +57,7 @@ Route::group(
         // begin:: money
         Route::controller(MoneyController::class)->prefix('money')->as('money.')->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/get_data_dt', 'get_data_dt')->name('get_data_dt');
+            Route::get('/list', 'list')->name('list');
             Route::post('/show', 'show')->name('show');
             Route::post('/save', 'save')->name('save');
             Route::post('/del', 'del')->name('del');

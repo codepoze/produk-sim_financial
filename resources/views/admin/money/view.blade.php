@@ -51,17 +51,6 @@
                                 </div>
                             </div>
                             <div class="mb-3 row field-input">
-                                <label for="status" class="col-sm-3 col-form-label">Status&nbsp;*</label>
-                                <div class="col-md-9 my-auto">
-                                    <select name="status" id="status" class="form-control form-control-sm">
-                                        <option value="">Pilih</option>
-                                        <option value="income">Income</option>
-                                        <option value="expense">Expense</option>
-                                    </select>
-                                    <span class="invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3 row field-input">
                                 <label for="amount" class="col-sm-3 col-form-label">Amount&nbsp;*</label>
                                 <div class="col-md-9 my-auto">
                                     <input type="text" name="amount" id="amount" class="form-control form-control-sm" onkeydown="return justAngka(event)" onkeyup="javascript:this.value=autoSeparator(this.value);" placeholder="Masukkan nilai" />
@@ -127,7 +116,7 @@
                     emptyTable: "Tak ada data yang tersedia pada tabel ini.",
                     processing: "Data sedang diproses...",
                 },
-                ajax: "{{ route('admin.money.get_data_dt') }}",
+                ajax: "{{ route('admin.money.list') }}",
                 columns: [{
                         title: 'No.',
                         data: 'DT_RowIndex',
@@ -136,11 +125,6 @@
                     {
                         title: 'Name',
                         data: 'name',
-                        class: 'text-center'
-                    },
-                    {
-                        title: 'Status',
-                        data: 'status',
                         class: 'text-center'
                     },
                     {

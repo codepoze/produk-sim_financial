@@ -13,23 +13,16 @@ use Yajra\DataTables\DataTables;
 
 class MoneyController extends Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-        // untuk deteksi session
-        detect_role_session($this->session, session()->has('roles'), 'admin');
-    }
-
     public function index()
     {
         $data = [
-            'category' => Category::all(),
+            'category' => Category::where('id_users', $this->session['id_users'])->latest()->get(),
         ];
 
-        return Template::load($this->session['roles'], 'Money', 'money', 'view', $data);
+        return Template::load('admin', 'Money', 'money', 'view', $data);
     }
 
-    public function get_data_dt()
+    public function list()
     {
         $data = Money::latest()->get();
 
@@ -65,7 +58,6 @@ class MoneyController extends Controller
             'id_money'    => $data->id_money,
             'id_category' => $data->id_category,
             'name'        => $data->name,
-            'status'      => $data->status,
             'amount'      => create_separator($data->amount),
             'description' => $data->description,
             'date'        => $data->date,
@@ -79,7 +71,6 @@ class MoneyController extends Controller
         $rules = [
             'id_category' => 'required',
             'name'        => 'required',
-            'status'      => 'required',
             'amount'      => 'required',
             'date'        => 'required',
         ];
@@ -87,7 +78,6 @@ class MoneyController extends Controller
         $messages = [
             'id_category.required' => 'Kategori harus diisi!',
             'name.required'        => 'Judul harus diisi!',
-            'status.required'      => 'Status harus diisi!',
             'amount.required'      => 'Jumlah harus diisi!',
             'date.required'        => 'Waktu harus diisi!',
         ];
@@ -106,13 +96,12 @@ class MoneyController extends Controller
                     'id_money' => $request->id_money,
                 ],
                 [
+                    'id_users'    => $this->session['id_users'],
                     'id_category' => $request->id_category,
                     'name'        => $request->name,
-                    'status'      => $request->status,
                     'amount'      => remove_separator($request->amount),
                     'description' => $request->description,
                     'date'        => $request->date,
-                    'by_users'    => $this->session['id_users'],
                 ]
             );
 

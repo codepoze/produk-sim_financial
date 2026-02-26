@@ -30,10 +30,10 @@
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="d-flex align-items-center">
-                        <img class="rounded-circle header-profile-user" src="{{ (session()->get('foto') === null) ? '//placehold.co/150' : asset_upload('picture/'.session()->get('foto')) }}" alt="Header Avatar">
+                        <img class="rounded-circle header-profile-user" src="{{ (auth()->user()->foto === null) ? '//placehold.co/150' : asset_upload('picture/'.auth()->user()->foto) }}" alt="Header Avatar">
                         <span class="text-start ms-xl-2">
-                            <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ session()->get('nama') }}</span>
-                            <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ session()->get('roles') }}</span>
+                            <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->nama }}</span>
+                            <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ auth()->user()->roles }}</span>
                         </span>
                     </span>
                 </button>

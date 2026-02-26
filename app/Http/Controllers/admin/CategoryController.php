@@ -8,26 +8,19 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-        // untuk deteksi session
-        detect_role_session($this->session, session()->has('roles'), 'admin');
-    }
-
     public function index()
     {
-        return Template::load($this->session['roles'], 'Category', 'category', 'view');
+        return Template::load('admin', 'Category', 'category', 'view');
     }
 
-
-    public function get_data_dt()
+    public function list()
     {
-        $data = Category::latest()->get();
+        $data = Category::where('id_users', $this->session['id_users'])->latest()->get();
 
         return DataTables::of($data)
             ->addIndexColumn()
@@ -40,6 +33,23 @@ class CategoryController extends Controller
             ->make(true);
     }
 
+    public function get(Request $request)
+    {
+        $query = Category::query();
+
+        if ($request->type !== null) {
+            $query->where('type', $request->type);
+        }
+
+        $query->select('id_category AS id', 'id_category AS value', 'name AS label')
+            ->where('id_users', $this->session['id_users'])
+            ->orderBy('id_category', 'desc');
+
+        $response = $query->get();
+
+        return Response::json($response);
+    }
+
     public function show(Request $request)
     {
         $response = Category::find(my_decrypt($request->id));
@@ -50,11 +60,20 @@ class CategoryController extends Controller
     public function save(Request $request)
     {
         $rules = [
-            'name' => 'required',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'name')->where('id_users', $this->session['id_users'])->where('type', $request->type),
+            ],
+            'type' => ['required', 'in:expense,income'],
         ];
 
         $messages = [
             'name.required' => 'Nama harus diisi!',
+            'name.unique'   => 'Nama kategori dengan tipe ini sudah ada!',
+            'type.required' => 'Tipe harus diisi!',
+            'type.in'       => 'Tipe harus diisi dengan expense atau income!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -71,8 +90,9 @@ class CategoryController extends Controller
                     'id_category' => $request->id_category,
                 ],
                 [
+                    'id_users' => $this->session['id_users'],
                     'name'     => $request->name,
-                    'by_users' => $this->session['id_users'],
+                    'type'     => $request->type,
                 ]
             );
 

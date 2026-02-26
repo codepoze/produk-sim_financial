@@ -25,9 +25,6 @@
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 p-2">
                             <select name="id_category" id="id_category" class="form-control form-control-sm">
                                 <option value="">Pilih Category</option>
-                                @foreach ($categories as $category)
-                                <option value="{{ $category->id_category }}">{{ $category->name }}</option>
-                                @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-sm-12 col-md-3 col-lg-3 p-2">
@@ -220,6 +217,8 @@
         });
 
         $(document).ready(function() {
+            loadCategory();
+
             loadIncomeExpenseBalance();
 
             loadIncome(seriesIncome);
@@ -231,6 +230,8 @@
 
         $(document).on('change', '#status', function(e) {
             e.preventDefault();
+
+            loadCategory($(this).val());
 
             loadBalance(seriesBalance);
         });
@@ -317,6 +318,16 @@
                 series.data.setAll(response);
 
                 series.appear(1000, 100);
+            });
+        }
+
+        function loadCategory(type = null) {
+            $.get("{{ route('admin.category.get') }}", {
+                type
+            }, function(response) {
+                const options = '<option value="">Pilih Category</option>' +
+                    response.map(item => `<option value="${item.id}">${item.label}</option>`).join('');
+                $('#id_category').html(options);
             });
         }
     </script>

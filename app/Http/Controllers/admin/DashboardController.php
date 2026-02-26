@@ -27,13 +27,6 @@ class DashboardController extends Controller
         '12' => 'Desember',
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-        // untuk deteksi session
-        detect_role_session($this->session, session()->has('roles'), 'admin');
-    }
-
     public function index()
     {
         $from_year = '2021';
@@ -44,58 +37,41 @@ class DashboardController extends Controller
             $years[] = $i;
         }
 
-        $categories = Category::all();
-
         $data = [
-            'categories' => $categories,
             'months'     => $this->months,
             'years'      => $years,
         ];
 
-        return Template::load($this->session['roles'], 'Dashboard', 'dashboard', 'view', $data);
+        return Template::load('admin', 'Dashboard', 'dashboard', 'view', $data);
     }
 
     public function count_income_expense_balance(Request $request)
     {
         $data = $request->all();
 
-        // get income
-        $income = Money::query();
+        // base query builder
+        $baseQuery = function ($type) use ($data) {
+            $query = Money::query()
+                ->join('categories', 'money.id_category', '=', 'categories.id_category')
+                ->where('categories.type', $type);
 
-        if ($data['id_category'] !== null) {
-            $income->where('id_category', $data['id_category']);
-        }
+            if ($data['id_category'] !== null) {
+                $query->where('money.id_category', $data['id_category']);
+            }
 
-        if ($data['month'] !== null) {
-            $income->whereMonth('date', $data['month']);
-        }
+            if ($data['month'] !== null) {
+                $query->whereMonth('money.date', $data['month']);
+            }
 
-        if ($data['year'] !== null) {
-            $income->whereYear('date', $data['year']);
-        }
+            if ($data['year'] !== null) {
+                $query->whereYear('money.date', $data['year']);
+            }
 
-        $income->where('status', 'income');
-        $income = $income->sum('amount');
+            return $query->sum('money.amount');
+        };
 
-        // get expense
-        $expense = Money::query();
-
-        if ($data['id_category'] !== null) {
-            $expense->where('id_category', $data['id_category']);
-        }
-
-        if ($data['month'] !== null) {
-            $expense->whereMonth('date', $data['month']);
-        }
-
-        if ($data['year'] !== null) {
-            $expense->whereYear('date', $data['year']);
-        }
-
-        $expense->where('status', 'expense');
-        $expense = $expense->sum('amount');
-
-        // get balance
+        $income  = $baseQuery('income');
+        $expense = $baseQuery('expense');
         $balance = ($income - $expense);
 
         $response = [
@@ -111,27 +87,28 @@ class DashboardController extends Controller
     {
         $data = $request->all();
 
-        $income = Money::query();
-        $income->select(DB::raw('id_category, sum(amount) as amount'));
-        $income->where('status', 'income');
+        $income = Money::query()
+            ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
+            ->join('categories', 'money.id_category', '=', 'categories.id_category')
+            ->where('categories.type', 'income');
 
         if ($data['id_category'] !== null) {
-            $income->where('id_category', $data['id_category']);
+            $income->where('money.id_category', $data['id_category']);
         }
 
         if ($data['month'] !== null) {
-            $income->whereMonth('date', $data['month']);
+            $income->whereMonth('money.date', $data['month']);
         }
 
         if ($data['year'] !== null) {
-            $income->whereYear('date', $data['year']);
+            $income->whereYear('money.date', $data['year']);
         }
 
-        $income->groupBy('id_category');
+        $income->groupBy('money.id_category');
         $income = $income->get();
 
         $response = [];
-        foreach ($income as $key => $value) {
+        foreach ($income as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
                 'value' => $value->amount
@@ -145,27 +122,28 @@ class DashboardController extends Controller
     {
         $data = $request->all();
 
-        $expense = Money::query();
-        $expense->select(DB::raw('id_category, sum(amount) as amount'));
-        $expense->where('status', 'expense');
+        $expense = Money::query()
+            ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
+            ->join('categories', 'money.id_category', '=', 'categories.id_category')
+            ->where('categories.type', 'expense');
 
         if ($data['id_category'] !== null) {
-            $expense->where('id_category', $data['id_category']);
+            $expense->where('money.id_category', $data['id_category']);
         }
 
         if ($data['month'] !== null) {
-            $expense->whereMonth('date', $data['month']);
+            $expense->whereMonth('money.date', $data['month']);
         }
 
         if ($data['year'] !== null) {
-            $expense->whereYear('date', $data['year']);
+            $expense->whereYear('money.date', $data['year']);
         }
 
-        $expense->groupBy('id_category');
+        $expense->groupBy('money.id_category');
         $expense = $expense->get();
 
         $response = [];
-        foreach ($expense as $key => $value) {
+        foreach ($expense as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
                 'value' => $value->amount
@@ -179,30 +157,31 @@ class DashboardController extends Controller
     {
         $data = $request->all();
 
-        $balance = Money::query();
-        $balance->select(DB::raw('id_category, sum(amount) as amount'));
+        $balance = Money::query()
+            ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
+            ->join('categories', 'money.id_category', '=', 'categories.id_category');
 
         if ($data['status'] !== null) {
-            $balance->where('status', $data['status']);
+            $balance->where('categories.type', $data['status']);
         }
 
         if ($data['id_category'] !== null) {
-            $balance->where('id_category', $data['id_category']);
+            $balance->where('money.id_category', $data['id_category']);
         }
 
         if ($data['month'] !== null) {
-            $balance->whereMonth('date', $data['month']);
+            $balance->whereMonth('money.date', $data['month']);
         }
 
         if ($data['year'] !== null) {
-            $balance->whereYear('date', $data['year']);
+            $balance->whereYear('money.date', $data['year']);
         }
 
-        $balance->groupBy('id_category');
+        $balance->groupBy('money.id_category');
         $balance = $balance->get();
 
         $response = [];
-        foreach ($balance as $key => $value) {
+        foreach ($balance as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
                 'value' => $value->amount

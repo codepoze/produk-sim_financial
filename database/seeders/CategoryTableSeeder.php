@@ -17,29 +17,36 @@ class CategoryTableSeeder extends Seeder
         $category = [
             [
                 'name'     => 'Salary',
-                'by_users' => 1,
+                'type'     => 'income',
+                'id_users' => 1,
             ],
             [
                 'name'     => 'Freelance',
-                'by_users' => 1,
+                'type'     => 'income',
+                'id_users' => 1,
             ],
             [
                 'name'     => 'Savings',
-                'by_users' => 1,
+                'type'     => 'income',
+                'id_users' => 1,
             ],
             [
                 'name'     => 'Investment',
-                'by_users' => 1,
+                'type'     => 'expense',
+                'id_users' => 1,
             ],
             [
                 'name'     => 'House Bills',
-                'by_users' => 1,
+                'type'     => 'expense',
+                'id_users' => 1,
             ],
             [
                 'name'     => 'Food',
-                'by_users' => 1,
+                'type'     => 'expense',
+                'id_users' => 1,
             ],
         ];
+        
         foreach ($category as $row) {
             DB::table('categories')->insert($row);
         }

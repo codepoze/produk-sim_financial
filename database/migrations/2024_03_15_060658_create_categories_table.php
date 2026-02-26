@@ -15,11 +15,16 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id_category');
+            $table->integer('id_users')->unsigned()->nullable();
             $table->string('name', 50)->nullable();
+            $table->enum('type', ['income', 'expense'])->nullable();
 
-            $table->integer('by_users')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->foreign('id_users')->references('id_users')->on('users')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->unique(['id_users', 'name', 'type'], 'unique_user_name_type');
         });
     }
 

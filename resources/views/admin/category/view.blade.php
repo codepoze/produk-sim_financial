@@ -50,6 +50,17 @@
                                     <span class="invalid-feedback"></span>
                                 </div>
                             </div>
+                            <div class="mb-3 row field-input">
+                                <label for="type" class="col-sm-2 col-form-label">Type&nbsp;*</label>
+                                <div class="col-md-10 my-auto">
+                                    <select name="type" id="type" class="form-control form-control-sm">
+                                        <option value="">Pilih</option>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                    </select>
+                                    <span class="invalid-feedback"></span>
+                                </div>
+                            </div>
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" id="cancel" class="btn btn-warning btn-sm" data-bs-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Batal</button>
                                 <button type="submit" id="save" class="btn btn-success btn-sm"><i class="fa fa-save"></i>&nbsp;Simpan</button>
@@ -83,7 +94,7 @@
                     emptyTable: "Tak ada data yang tersedia pada tabel ini.",
                     processing: "Data sedang diproses...",
                 },
-                ajax: "{{ route('admin.category.get_data_dt') }}",
+                ajax: "{{ route('admin.category.list') }}",
                 columns: [{
                         title: 'No.',
                         data: 'DT_RowIndex',
@@ -92,6 +103,11 @@
                     {
                         title: 'Name',
                         data: 'name',
+                        class: 'text-center'
+                    },
+                    {
+                        title: 'Type',
+                        data: 'type',
                         class: 'text-center'
                     },
                     {
@@ -177,6 +193,16 @@
                     $(this).removeClass('is-invalid').addClass('is-valid');
                 }
             });
+
+            $(document).on('change', '#form-add-upd select', function(e) {
+                e.preventDefault();
+
+                if ($(this).val() == '') {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                }
+            });
         }();
 
         let untukTambahData = function() {
@@ -225,6 +251,8 @@
                         $.each(response, function(key, value) {
                             if (key) {
                                 if (($('#' + key).prop('tagName') === 'INPUT' || $('#' + key).prop('tagName') === 'TEXTAREA')) {
+                                    $('#' + key).val(value);
+                                } else if ($('#' + key).prop('tagName') === 'SELECT') {
                                     $('#' + key).val(value);
                                 }
                             }

@@ -24,7 +24,7 @@ class ProfilController extends Controller
         $data = [
             'user' => User::find($this->session['id_users']),
         ];
-        return Template::load($this->session['roles'], 'Profil', 'profil', 'view', $data);
+        return Template::load('admin', 'Profil', 'profil', 'view', $data);
     }
 
     public function save_picture(Request $request)
