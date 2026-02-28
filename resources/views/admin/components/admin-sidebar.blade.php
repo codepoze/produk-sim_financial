@@ -8,15 +8,12 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-
-                <li class="menu-title">Master</li>
                 <li>
                     <a href="{{ route('admin.category.index') }}" class="waves-effect">
                         <i class="bx bx-list-ul"></i>
                         <span>Category</span>
                     </a>
                 </li>
-                <li class="menu-title">Pustaka</li>
                 <li>
                     <a href="{{ route('admin.money.index') }}" class="waves-effect">
                         <i class="bx bx-money"></i>

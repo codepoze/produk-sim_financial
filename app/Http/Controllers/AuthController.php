@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login()
     {
         $data = [
             'title' => "Login"
@@ -18,15 +18,15 @@ class AuthController extends Controller
         return view('login', $data);
     }
 
-    public function check(Request $request)
+    public function check_login(Request $request)
     {
         $rules = [
-            'username' => 'required',
+            'email'    => 'required',
             'password' => 'required',
         ];
 
         $messages = [
-            'username.required' => 'Username tidak boleh kosong!',
+            'email.required'    => 'Email tidak boleh kosong!',
             'password.required' => 'Password tidak boleh kosong!',
         ];
 
@@ -38,12 +38,12 @@ class AuthController extends Controller
             return Response::json($response);
         }
 
-        $username = $request->input('username');
+        $email    = $request->input('email');
         $password = $request->input('password');
 
         // untuk check users
         $checking = [
-            'username' => $username,
+            'email'    => $email,
             'password' => $password,
             'active'   => 'y'
         ];
@@ -57,7 +57,7 @@ class AuthController extends Controller
             Auth::login($users, $remember_me);
 
             // untuk check role
-            if ($users->roles === 'admin') {
+            if ($users->roles) {
                 $response = [
                     'status' => 'success',
                     'url'    => url('/admin/dashboard'),
@@ -77,6 +77,17 @@ class AuthController extends Controller
 
         return Response::json($response);
     }
+
+    public function register()
+    {
+        $data = [
+            'title' => "Register"
+        ];
+
+        return view('register', $data);
+    }
+
+    public function check_register(Request $request) {}
 
     public function logout(Request $request)
     {

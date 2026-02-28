@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['guest', 'set.locale']], function () {
     // begin:: auth
-    Route::get('/', [AuthController::class, 'login'])->name('home');
-    Route::post('/check', [AuthController::class, 'check'])->name('auth.check');
+    Route::get('/', [AuthController::class, 'login'])->name('login');
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+
+    Route::post('/check_login', [AuthController::class, 'check_login'])->name('auth.login');
+    Route::post('/check_register', [AuthController::class, 'check_register'])->name('auth.register');
     // end:: auth
 });
 

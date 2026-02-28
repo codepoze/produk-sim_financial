@@ -39,8 +39,8 @@
                             <div class="row">
                                 <div class="col-7">
                                     <div class="text-success p-4">
-                                        <h5 class="text-success">Selamat Datang!</h5>
-                                        <p>Masuk untuk melanjutkan ke MoneyLog.</p>
+                                        <h5 class="text-success">Pendaftaran</h5>
+                                        <p>Buat akun Anda.</p>
                                     </div>
                                 </div>
                                 <div class="col-5 align-self-end">
@@ -68,10 +68,15 @@
                             <div class="p-2">
                                 <div id="alert"></div>
 
-                                <form id="form-login" class="form-horizontal" action="{{ route('auth.login') }}" method="post">
+                                <form id="form-register" class="form-horizontal" action="{{ route('auth.register') }}" method="post">
+                                    <div class="field-input mb-3">
+                                        <label for="name" class="form-label">Nama</label>
+                                        <input type="text" class="form-control" name="name" id="name" placeholder="Nama Lengkap" />
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                     <div class="field-input mb-3">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" />
+                                        <input type="email" class="form-control" name="email" id="email" placeholder="Email" />
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="field-input mb-3">
@@ -82,20 +87,19 @@
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember_me" id="remember-check">
-                                        <label class="form-check-label" for="remember-check">
-                                            Ingat Saya
-                                        </label>
-                                    </div>
-                                    <div class="mt-2 text-end">
-                                        <a href="#" class="text-muted"><i class="mdi mdi-lock"></i> Lupa password?</a>
+                                    <div class="field-input mb-3">
+                                        <label class="form-label">Konfirmasi Password</label>
+                                        <div class="input-group auth-pass-inputgroup">
+                                            <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Konfirmasi Password" />
+                                            <button class="btn btn-light " type="button"><i class="mdi mdi-eye-outline"></i></button>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
                                     </div>
                                     <div class="mt-3 d-grid">
-                                        <button class="btn btn-success waves-effect waves-light" type="submit" id="submit">Masuk</button>
+                                        <button class="btn btn-success waves-effect waves-light" type="submit" id="submit">Daftar</button>
                                     </div>
                                     <div class="mt-4 text-center">
-                                        <p class="mb-0">Belum punya akun? <a href="{{ route('register') }}" class="fw-medium text-success">Ayo daftar</a></p>
+                                        <p class="mb-0">Sudah punya akun? <a href="{{ route('login') }}" class="fw-medium text-success">Masuk sekarang</a></p>
                                     </div>
                                 </form>
                             </div>
@@ -121,8 +125,8 @@
     <!-- end:: jd global -->
 
     <script>
-        let untukLogin = function() {
-            $('#form-login').submit(function(e) {
+        let untukRegister = function() {
+            $('#form-register').submit(function(e) {
                 e.preventDefault();
 
                 $.ajax({
@@ -131,8 +135,8 @@
                     data: $(this).serialize(),
                     dataType: 'json',
                     beforeSend: function() {
-                        $('#form-login').find('input, textarea, select').removeClass('is-valid');
-                        $('#form-login').find('input, textarea, select').removeClass('is-invalid');
+                        $('#form-register').find('input, textarea, select').removeClass('is-valid');
+                        $('#form-register').find('input, textarea, select').removeClass('is-invalid');
 
                         $('#submit').attr('disabled', 'disabled');
                         $('#submit').html('Menunggu...');
@@ -162,12 +166,12 @@
                         }
 
                         $('#submit').removeAttr('disabled');
-                        $('#submit').html('Masuk');
+                        $('#submit').html('Daftar');
                     }
                 })
             });
 
-            $(document).on('keyup', '#form-login input', function(e) {
+            $(document).on('keyup', '#form-register input', function(e) {
                 e.preventDefault();
                 if ($(this).val() == '') {
                     $(this).removeClass('is-valid').addClass('is-invalid');
