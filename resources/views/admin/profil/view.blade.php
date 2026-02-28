@@ -65,13 +65,6 @@
                                                 <span class="invalid-feedback"></span>
                                             </div>
                                         </div>
-                                        <div class="mb-3 row field-input">
-                                            <label for="i_username" class="col-sm-3 col-form-label">Username&nbsp;*</label>
-                                            <div class="col-md-9 my-auto">
-                                                <input type="text" name="i_username" id="i_username" class="form-control form-control-sm" value="{{ $user->username }}" placeholder="Masukkan username Anda" />
-                                                <span class="invalid-feedback"></span>
-                                            </div>
-                                        </div>
                                         <div class="hstack gap-2 justify-content-end">
                                             <button type="submit" id="save-akun" class="btn btn-success btn-sm"><i class="fa fa-save"></i>&nbsp;Save</button>
                                         </div>

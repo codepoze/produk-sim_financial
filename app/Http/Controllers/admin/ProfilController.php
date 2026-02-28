@@ -49,7 +49,7 @@ class ProfilController extends Controller
             $user = User::find($this->session['id_users']);
 
             // hapus foto
-            del_picture($user->foto);
+            del_picture($user->picture);
 
             // nama foto
             $nama_foto = generate_random_name_file($request->i_foto);
@@ -57,7 +57,7 @@ class ProfilController extends Controller
             // upload foto
             $request->i_foto->move(upload_path('picture'), $nama_foto);
 
-            $user->foto = $nama_foto;
+            $user->picture = $nama_foto;
 
             $request->session()->put('foto', $nama_foto);
 
@@ -77,14 +77,12 @@ class ProfilController extends Controller
             $rules = [
                 'i_nama'     => 'required',
                 'i_email'    => 'required|email',
-                'i_username' => 'required',
             ];
 
             $messages = [
                 'i_nama.required'     => 'Nama harus diisi!',
                 'i_email.required'    => 'Email harus diisi!',
                 'i_email.email'       => 'Email tidak valid!',
-                'i_username.required' => 'Username harus diisi!',
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -97,9 +95,8 @@ class ProfilController extends Controller
 
             $user = User::find($this->session['id_users']);
 
-            $user->nama     = $request->i_nama;
+            $user->name     = $request->i_nama;
             $user->email    = $request->i_email;
-            $user->username = $request->i_username;
 
             $request->session()->put('nama', $request->i_nama);
 

@@ -121,6 +121,7 @@
     <script type="text/javascript" src="{{ asset_admin('libs/metismenu/metisMenu.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_admin('libs/simplebar/simplebar.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_admin('libs/node-waves/waves.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_admin('libs/sweetalert2/sweetalert2.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_admin('my_assets/my_fun.js') }}"></script>
     <!-- end:: jd global -->
 
@@ -142,26 +143,41 @@
                         $('#submit').html('Menunggu...');
                     },
                     success: function(response) {
-                        if (response.status === 'success') {
-                            window.location = response.url;
-                        } else if (response.status === 'warning') {
-                            $('#alert').html(
-                                `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <div class="alert-body d-flex align-items-center">
-                                        <i data-feather="info" class="me-50"></i>
-                                        <span>${response.message}</span>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                </div>`
-                            );
+                        if (response.type === 'success') {
+                            Swal.fire({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                confirmButtonText: response.button,
+                                customClass: {
+                                    confirmButton: `btn btn-sm btn-${response.class}`,
+                                },
+                                buttonsStyling: false,
+                            }).then((value) => {
+                                location.href = "{{ route('login') }}";
+                            });
                         } else {
                             $.each(response.errors, function(key, value) {
                                 if (key) {
                                     if (($('#' + key).prop('tagName') === 'INPUT' || $('#' + key).prop('tagName') === 'TEXTAREA')) {
                                         $('#' + key).addClass('is-invalid');
                                         $('#' + key).parents('.field-input').find('.invalid-feedback').html(value);
+                                    } else if ($('#' + key).prop('tagName') === 'SELECT') {
+                                        $('#' + key).addClass('is-invalid');
+                                        $('#' + key).parents('.field-input').find('.invalid-feedback').html(value);
                                     }
                                 }
+                            });
+
+                            Swal.fire({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                confirmButtonText: response.button,
+                                customClass: {
+                                    confirmButton: `btn btn-sm btn-${response.class}`,
+                                },
+                                buttonsStyling: false,
                             });
                         }
 

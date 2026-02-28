@@ -17,7 +17,7 @@ class UserTableSeeder extends Seeder
         // insert users
         $user           = new User();
         $user->id_users = '1';
-        $user->nama     = 'Alan Saputra Lengkoan';
+        $user->name     = 'Alan Saputra Lengkoan';
         $user->email    = 'alanlengkoan@gmail.com';
         $user->roles    = 'users';
         $user->active   = 'y';
