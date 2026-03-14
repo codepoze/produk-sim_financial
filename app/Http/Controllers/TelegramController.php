@@ -48,6 +48,4 @@ class TelegramController extends Controller
 
         return response()->json(['ok' => true]);
     }
-    
-    
 }
