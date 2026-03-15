@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Telegram\Commands\CategoriesCommand;
 use App\Telegram\Commands\LinkCommand;
+use App\Telegram\Commands\ReportCommand;
 use App\Telegram\Commands\StartCommand;
 use App\Telegram\Handlers\TransactionHandler;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -46,6 +47,7 @@ class TelegramController extends Controller
             match ($command) {
                 '/start'      => (new StartCommand)->handle($chatId, $user),
                 '/categories' => (new CategoriesCommand)->handle($chatId, $user),
+                '/report'     => (new ReportCommand)->handle($text, $chatId, $user),
                 default       => Telegram::sendMessage([
                     'chat_id' => $chatId,
                     'text'    => "❓ Command tidak dikenali. Ketik /start untuk melihat panduan.",
@@ -64,6 +66,20 @@ class TelegramController extends Controller
     public function setupWebhook()
     {
         $response = Telegram::setWebhook(['url' => env('TELEGRAM_WEBHOOK_URL')]);
+
+        return response()->json($response);
+    }
+
+    public function setCommands()
+    {
+        $response = Telegram::setMyCommands([
+            'commands' => [
+                ['command' => 'start',      'description' => 'Mulai bot & lihat panduan cara mencatat transaksi'],
+                ['command' => 'link',       'description' => 'Hubungkan akun MoneyLog dengan Telegram'], // ← tambahkan
+                ['command' => 'categories', 'description' => 'Lihat daftar kategori pemasukan & pengeluaran'],
+                ['command' => 'report',     'description' => 'Laporan keuangan bulanan & tahunan'],
+            ]
+        ]);
 
         return response()->json($response);
     }

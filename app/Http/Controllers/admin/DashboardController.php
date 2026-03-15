@@ -7,6 +7,7 @@ use App\Libraries\Template;
 use App\Models\Category;
 use App\Models\Money;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
@@ -38,8 +39,8 @@ class DashboardController extends Controller
         }
 
         $data = [
-            'months'     => $this->months,
-            'years'      => $years,
+            'months' => $this->months,
+            'years'  => $years,
         ];
 
         return Template::load('admin', 'Dashboard', 'dashboard', 'view', $data);
@@ -47,12 +48,13 @@ class DashboardController extends Controller
 
     public function count_income_expense_balance(Request $request)
     {
-        $data = $request->all();
+        $data    = $request->all();
+        $idUsers = Auth::user()->id_users;
 
-        // base query builder
-        $baseQuery = function ($type) use ($data) {
+        $baseQuery = function ($type) use ($data, $idUsers) {
             $query = Money::query()
                 ->join('categories', 'money.id_category', '=', 'categories.id_category')
+                ->where('money.id_users', $idUsers)          // ← tambahkan
                 ->where('categories.type', $type);
 
             if ($data['id_category'] !== null) {
@@ -74,22 +76,22 @@ class DashboardController extends Controller
         $expense = $baseQuery('expense');
         $balance = ($income - $expense);
 
-        $response = [
+        return Response::json([
             'income'  => rupiah($income),
             'expense' => rupiah($expense),
             'balance' => rupiah($balance),
-        ];
-
-        return Response::json($response);
+        ]);
     }
 
     public function count_income(Request $request)
     {
-        $data = $request->all();
+        $data    = $request->all();
+        $idUsers = Auth::user()->id_users;
 
         $income = Money::query()
             ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
             ->join('categories', 'money.id_category', '=', 'categories.id_category')
+            ->where('money.id_users', $idUsers)              // ← tambahkan
             ->where('categories.type', 'income');
 
         if ($data['id_category'] !== null) {
@@ -111,7 +113,7 @@ class DashboardController extends Controller
         foreach ($income as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
-                'value' => $value->amount
+                'value' => $value->amount,
             ];
         }
 
@@ -120,11 +122,13 @@ class DashboardController extends Controller
 
     public function count_expense(Request $request)
     {
-        $data = $request->all();
+        $data    = $request->all();
+        $idUsers = Auth::user()->id_users;
 
         $expense = Money::query()
             ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
             ->join('categories', 'money.id_category', '=', 'categories.id_category')
+            ->where('money.id_users', $idUsers)              // ← tambahkan
             ->where('categories.type', 'expense');
 
         if ($data['id_category'] !== null) {
@@ -146,7 +150,7 @@ class DashboardController extends Controller
         foreach ($expense as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
-                'value' => $value->amount
+                'value' => $value->amount,
             ];
         }
 
@@ -155,11 +159,13 @@ class DashboardController extends Controller
 
     public function count_balance(Request $request)
     {
-        $data = $request->all();
+        $data    = $request->all();
+        $idUsers = Auth::user()->id_users;
 
         $balance = Money::query()
             ->select(DB::raw('money.id_category, sum(money.amount) as amount'))
-            ->join('categories', 'money.id_category', '=', 'categories.id_category');
+            ->join('categories', 'money.id_category', '=', 'categories.id_category')
+            ->where('money.id_users', $idUsers);             // ← tambahkan
 
         if ($data['status'] !== null) {
             $balance->where('categories.type', $data['status']);
@@ -184,7 +190,7 @@ class DashboardController extends Controller
         foreach ($balance as $value) {
             $response[] = [
                 'key'   => $value->toCategory->name,
-                'value' => $value->amount
+                'value' => $value->amount,
             ];
         }
 
