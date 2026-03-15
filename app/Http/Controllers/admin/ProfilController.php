@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Libraries\Template;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,7 @@ class ProfilController extends Controller
         $data = [
             'user' => User::find($this->session['id_users']),
         ];
+
         return Template::load('admin', 'Profil', 'profil', 'view', $data);
     }
 
@@ -152,5 +154,35 @@ class ProfilController extends Controller
         }
 
         return Response::json($response);
+    }
+
+    public function generate_telegram_token()
+    {
+        $user  = Auth::user();
+        $token = $user->generateTelegramToken();
+
+        return Response::json([
+            'token'      => $token,
+            'expired_at' => now()->addMinutes(5)->format('H:i'),
+            'type'       => 'success',
+            'title'      => 'Berhasil!',
+            'message'    => 'Kirim perintah berikut ke bot Telegram kamu:',
+            'command'    => "/link {$token}",
+        ]);
+    }
+
+    public function unlink_telegram_token()
+    {
+        Auth::user()->update([
+            'telegram_chat_id'          => null,
+            'telegram_token'            => null,
+            'telegram_token_expired_at' => null,
+        ]);
+
+        return Response::json([
+            'type'  => 'success',
+            'title' => 'Berhasil!',
+            'text'  => 'Akun Telegram berhasil diputuskan.',
+        ]);
     }
 }

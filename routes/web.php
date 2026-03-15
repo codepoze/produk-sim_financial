@@ -43,6 +43,9 @@ Route::group(
             Route::post('/save_picture', 'save_picture')->name('save_picture');
             Route::post('/save_account', 'save_account')->name('save_account');
             Route::post('/save_security', 'save_security')->name('save_security');
+
+            Route::post('/generate_telegram_token', 'generate_telegram_token')->name('generate_telegram_token');
+            Route::post('/unlink_telegram_token', 'unlink_telegram_token')->name('unlink_telegram_token');
         });
         // end:: profil
 

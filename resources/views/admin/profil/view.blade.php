@@ -23,6 +23,10 @@
                                     <i class="fa fa-key"></i>&nbsp;
                                     Keamanan
                                 </a>
+                                <a class="nav-link mb-2" id="v-pills-telegram-tab" data-bs-toggle="pill" href="#v-pills-telegram" role="tab" aria-controls="v-pills-telegram" aria-selected="false">
+                                    <i class="fa fa-paper-plane"></i>&nbsp;
+                                    Telegram
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-9">
@@ -101,6 +105,64 @@
                                     </form>
                                 </div>
                                 <!-- end:: keamanan -->
+                                <!-- begin:: telegram -->
+                                <div class="tab-pane fade" id="v-pills-telegram" role="tabpanel" aria-labelledby="v-pills-telegram-tab">
+                                    <h6 class="mb-3">Hubungkan Akun Telegram</h6>
+
+                                    {{-- Status --}}
+                                    <div class="mb-4">
+                                        @if($user->telegram_chat_id)
+                                        <div class="alert alert-success d-flex align-items-center gap-2 mb-0">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Akun Telegram kamu <strong>sudah terhubung</strong>.</span>
+                                        </div>
+                                        @else
+                                        <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <span>Akun Telegram kamu <strong>belum terhubung</strong>.</span>
+                                        </div>
+                                        @endif
+                                    </div>
+
+                                    {{-- Generate Token --}}
+                                    <div class="mb-3">
+                                        <p class="text-muted mb-2">
+                                            Klik tombol di bawah untuk mendapatkan token, lalu kirimkan ke bot Telegram kamu.
+                                            Token berlaku selama <strong>5 menit</strong>.
+                                        </p>
+                                        <button type="button" id="btn-generate-token" class="btn btn-primary btn-sm">
+                                            <i class="fab fa-telegram-plane"></i>&nbsp;Generate Token
+                                        </button>
+                                    </div>
+
+                                    {{-- Token Result --}}
+                                    <div id="telegram-token-result" class="d-none">
+                                        <div class="alert alert-info">
+                                            <p class="mb-1"><strong>Token kamu:</strong></p>
+                                            <h4 class="mb-2 font-monospace fw-bold" id="token-value"></h4>
+                                            <p class="mb-1">Kirim perintah berikut ke bot Telegram:</p>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" id="token-command" class="form-control font-monospace" readonly />
+                                                <button class="btn btn-outline-secondary" type="button" id="btn-copy-token">
+                                                    <i class="fas fa-copy"></i>&nbsp;Salin
+                                                </button>
+                                            </div>
+                                            <small class="text-muted mt-1 d-block">
+                                                <i class="fas fa-hourglass-half"></i>&nbsp;Expired pukul: <span id="token-expired"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    {{-- Unlink --}}
+                                    @if($user->telegram_chat_id)
+                                    <hr>
+                                    <p class="text-muted mb-2">Ingin memutuskan koneksi Telegram?</p>
+                                    <button type="button" id="btn-unlink-telegram" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-link-slash"></i>&nbsp;Putuskan Koneksi
+                                    </button>
+                                    @endif
+                                </div>
+                                <!-- end:: telegram -->
                             </div>
                         </div>
                     </div>
@@ -325,6 +387,97 @@
                     }
                 });
             });
+        }();
+
+        let untukTelegram = function() {
+            // Generate Token
+            $(document).on('click', '#btn-generate-token', function() {
+                let btn = $(this);
+                btn.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>&nbsp;Memproses...');
+
+                $.ajax({
+                    method: 'POST',
+                    url: "{{ route('admin.profil.generate_telegram_token') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.type === 'success') {
+                            $('#token-value').text(response.token);
+                            $('#token-command').val(response.command);
+                            $('#token-expired').text(response.expired_at);
+                            $('#telegram-token-result').removeClass('d-none');
+                        } else {
+                            Swal.fire({
+                                title: response.title,
+                                text: response.text,
+                                icon: response.type,
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    confirmButton: 'btn btn-sm btn-danger'
+                                },
+                                buttonsStyling: false,
+                            });
+                        }
+                    },
+                    complete: function() {
+                        btn.removeAttr('disabled').html('<i class="fa fa-telegram"></i>&nbsp;Generate Token');
+                    }
+                });
+            });
+
+            // Salin Token
+            $(document).on('click', '#btn-copy-token', function() {
+                let command = $('#token-command').val();
+                navigator.clipboard.writeText(command).then(function() {
+                    $('#btn-copy-token').html('<i class="fa fa-check"></i>&nbsp;Tersalin!');
+                    setTimeout(() => {
+                        $('#btn-copy-token').html('<i class="fa fa-copy"></i>&nbsp;Salin');
+                    }, 2000);
+                });
+            });
+
+            // Unlink Telegram
+            $(document).on('click', '#btn-unlink-telegram', function() {
+                Swal.fire({
+                    title: 'Putuskan Koneksi?',
+                    text: 'Akun Telegram kamu akan diputuskan dari MoneyLog.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Putuskan',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: 'btn btn-sm btn-danger me-2',
+                        cancelButton: 'btn btn-sm btn-secondary',
+                    },
+                    buttonsStyling: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'POST',
+                            url: "{{ route('admin.profil.unlink_telegram_token') }}",
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                Swal.fire({
+                                    title: response.title,
+                                    text: response.text,
+                                    icon: response.type,
+                                    confirmButtonText: 'OK',
+                                    customClass: {
+                                        confirmButton: 'btn btn-sm btn-success'
+                                    },
+                                    buttonsStyling: false,
+                                }).then(() => location.reload());
+                            }
+                        });
+                    }
+                });
+            });
+
         }();
 
         function cekLokasiFoto(input) {

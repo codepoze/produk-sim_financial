@@ -21,7 +21,11 @@ class CreateUsersTable extends Migration
             $table->enum('active', ['y', 'n'])->nullable();
             $table->string('email', 500)->unique();
             $table->string('password', 500);
-            $table->rememberToken();
+            
+            $table->string('telegram_chat_id')->nullable()->unique();
+            $table->string('telegram_token')->nullable()->unique();
+            $table->timestamp('telegram_token_expired_at')->nullable();
+
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable()->useCurrent()->useCurrentOnUpdate();
         });
