@@ -17,8 +17,10 @@ class CategoriesCommand
 
         if ($categories->isEmpty()) {
             Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text'    => "📂 Kamu belum memiliki kategori.\n\nSilakan tambahkan kategori di aplikasi MoneyLog.",
+                'chat_id'    => $chatId,
+                'parse_mode' => 'Markdown',
+                'text'       => "📂 Kamu belum memiliki kategori.\n\n" .
+                    "Silakan tambahkan kategori di aplikasi MoneyLog.",
             ]);
             return;
         }
@@ -41,6 +43,26 @@ class CategoriesCommand
                 $text .= "  - {$cat->name}\n";
             }
         }
+
+        $text .= "\n\n💡 *Format input transaksi:*\n";
+        $text .= "`[kategori], [nominal], [keterangan]`\n";
+        $text .= "`[kategori], [nominal], [keterangan], [tanggal]`\n\n";
+        $text .= "📝 *Contoh:*\n";
+
+        if ($income->isNotEmpty()) {
+            $contohIncome = $income->first()->name;
+            $text .= "`{$contohIncome}, 5.000.000, gaji januari`\n";
+            $text .= "`{$contohIncome}, 5.000.000, gaji januari, 2024-01-01`\n";
+        }
+
+        if ($expense->isNotEmpty()) {
+            $contohExpense = $expense->first()->name;
+            $text .= "`{$contohExpense}, 20.000, keterangan`\n";
+            $text .= "`{$contohExpense}, 20.000, keterangan, 2024-01-15`\n";
+        }
+
+        $text .= "\n_Tanggal bersifat opsional, default hari ini._\n";
+        $text .= "_Bisa kirim lebih dari 1 baris sekaligus!_";
 
         Telegram::sendMessage([
             'chat_id'    => $chatId,

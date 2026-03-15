@@ -5,6 +5,7 @@ namespace App\Telegram\Handlers;
 use App\Models\Category;
 use App\Models\Money;
 use App\Models\User;
+use Carbon\Carbon;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TransactionHandler
@@ -17,12 +18,25 @@ class TransactionHandler
 
         foreach ($lines as $line) {
             $line  = trim($line);
-            $parts = explode(' ', $line, 3);
 
-            if (count($parts) >= 2 && is_numeric($parts[1])) {
+            // ← limit 4 agar date bisa masuk parts[3]
+            $parts = array_map('trim', explode(',', $line, 4));
+
+            if (count($parts) >= 2 && $this->isValidNominal($parts[1])) {
                 $namaKategori = strtolower($parts[0]);
-                $nominal      = (float) $parts[1];
+                $nominal      = $this->parseNominal($parts[1]);
                 $keterangan   = $parts[2] ?? '-';
+
+                // Date optional — default hari ini
+                if (isset($parts[3])) {
+                    $date = $this->parseDate($parts[3]);
+                    if ($date === null) {
+                        $gagal[] = "❌ `{$line}` → format tanggal salah, gunakan `YYYY-MM-DD`\nContoh: `2025-01-15`";
+                        continue;
+                    }
+                } else {
+                    $date = today();
+                }
 
                 $category = Category::where('id_users', $user->id_users)
                     ->whereRaw('LOWER(name) = ?', [$namaKategori])
@@ -36,14 +50,14 @@ class TransactionHandler
                 Money::create([
                     'id_users'    => $user->id_users,
                     'id_category' => $category->id_category,
-                    'name'        => $keterangan,
                     'amount'      => $nominal,
                     'description' => $keterangan,
-                    'date'        => now(),
+                    'date'        => $date,
                 ]);
 
                 $type       = $category->type === 'income' ? '💚' : '🔴';
-                $berhasil[] = "{$type} *{$namaKategori}* - Rp " . number_format($nominal, 0, ',', '.') . " ({$keterangan})";
+                $dateLabel  = $date->isToday() ? 'hari ini' : $date->format('d/m/Y');
+                $berhasil[] = "{$type} *{$namaKategori}* - " . rupiah($nominal) . " ({$keterangan}) 📅 {$dateLabel}";
             } else {
                 if (!empty($line)) {
                     $gagal[] = "❌ `{$line}` → format salah";
@@ -83,14 +97,14 @@ class TransactionHandler
             $reply .= "\n\n📊 *Ringkasan hari ini:*\n";
 
             if ($totalIncome > 0) {
-                $reply .= "💚 Pemasukan : Rp " . number_format($totalIncome, 0, ',', '.') . "\n";
+                $reply .= "💚 Pemasukan : " . rupiah($totalIncome) . "\n";
             }
 
             if ($totalExpense > 0) {
-                $reply .= "🔴 Pengeluaran: Rp " . number_format($totalExpense, 0, ',', '.') . "\n";
+                $reply .= "🔴 Pengeluaran: " . rupiah($totalExpense) . "\n";
             }
 
-            $reply .= "{$saldoIcon} *Saldo hari ini: Rp " . number_format(abs($saldo), 0, ',', '.') . "*";
+            $reply .= "{$saldoIcon} *Saldo hari ini: " . rupiah(abs($saldo)) . "*";
 
             if ($saldo < 0) {
                 $reply .= " _(minus)_";
@@ -104,5 +118,45 @@ class TransactionHandler
         }
 
         return $reply;
+    }
+
+    private function isValidNominal(string $value): bool
+    {
+        $clean = str_replace('.', '', $value);
+        $clean = str_replace(',', '.', $clean);
+
+        return is_numeric($clean) && (float) $clean > 0;
+    }
+
+    private function parseNominal(string $value): float
+    {
+        $value = str_replace('.', '', $value);
+        $value = preg_replace('/[^0-9,]/', '', $value);
+        $value = str_replace(',', '.', $value);
+
+        return (float) $value;
+    }
+
+    private function parseDate(string $value): ?Carbon
+    {
+        $value = trim($value);
+
+        // Harus tepat format YYYY-MM-DD
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return null;
+        }
+
+        try {
+            $date = Carbon::createFromFormat('Y-m-d', $value);
+
+            // Double check hasil parse harus sama persis dengan input
+            if ($date && $date->format('Y-m-d') === $value) {
+                return $date;
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

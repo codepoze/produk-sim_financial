@@ -17,7 +17,6 @@ class CreateMoneyTable extends Migration
             $table->increments('id_money');
             $table->integer('id_users')->unsigned()->nullable();
             $table->integer('id_category')->unsigned()->nullable();
-            $table->string('name', 50)->nullable();
             $table->decimal('amount', 15, 2)->nullable();
             $table->text('description')->nullable();
             $table->date('date')->nullable();

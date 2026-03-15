@@ -44,20 +44,6 @@
                         <!-- begin:: untuk form -->
                         <div id="form-show">
                             <div class="mb-3 row field-input">
-                                <label for="name" class="col-sm-3 col-form-label">Name&nbsp;*</label>
-                                <div class="col-md-9 my-auto">
-                                    <input type="text" name="name" id="name" class="form-control form-control-sm" placeholder="Masukkan nama" />
-                                    <span class="invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3 row field-input">
-                                <label for="amount" class="col-sm-3 col-form-label">Amount&nbsp;*</label>
-                                <div class="col-md-9 my-auto">
-                                    <input type="text" name="amount" id="amount" class="form-control form-control-sm" onkeydown="return justAngka(event)" onkeyup="javascript:this.value=autoSeparator(this.value);" placeholder="Masukkan nilai" />
-                                    <span class="invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <div class="mb-3 row field-input">
                                 <label for="id_category" class="col-sm-3 col-form-label">Category&nbsp;*</label>
                                 <div class="col-md-9 my-auto">
                                     <select name="id_category" id="id_category" class="form-control form-control-sm">
@@ -66,6 +52,13 @@
                                         <option value="{{ $row->id_category }}">{{ $row->name }}</option>
                                         @endforeach
                                     </select>
+                                    <span class="invalid-feedback"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3 row field-input">
+                                <label for="amount" class="col-sm-3 col-form-label">Amount&nbsp;*</label>
+                                <div class="col-md-9 my-auto">
+                                    <input type="text" name="amount" id="amount" class="form-control form-control-sm" onkeydown="return justAngka(event)" onkeyup="javascript:this.value=autoSeparator(this.value);" placeholder="Masukkan nilai" />
                                     <span class="invalid-feedback"></span>
                                 </div>
                             </div>
@@ -123,18 +116,13 @@
                         class: 'text-center'
                     },
                     {
-                        title: 'Name',
-                        data: 'name',
+                        title: 'Category',
+                        data: 'to_category.name',
                         class: 'text-center'
                     },
                     {
                         title: 'Amount',
                         data: 'amount',
-                        class: 'text-center'
-                    },
-                    {
-                        title: 'Category',
-                        data: 'to_category.name',
                         class: 'text-center'
                     },
                     {

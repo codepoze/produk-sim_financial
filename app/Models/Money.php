@@ -16,7 +16,6 @@ class Money extends Model
     protected $fillable = [
         'id_users',
         'id_category',
-        'name',
         'amount',
         'description',
         'date',

@@ -57,7 +57,6 @@ class MoneyController extends Controller
         $response = [
             'id_money'    => $data->id_money,
             'id_category' => $data->id_category,
-            'name'        => $data->name,
             'amount'      => create_separator($data->amount),
             'description' => $data->description,
             'date'        => $data->date,
@@ -70,16 +69,16 @@ class MoneyController extends Controller
     {
         $rules = [
             'id_category' => 'required',
-            'name'        => 'required',
             'amount'      => 'required',
             'date'        => 'required',
+            'description' => 'required',
         ];
 
         $messages = [
             'id_category.required' => 'Kategori harus diisi!',
-            'name.required'        => 'Judul harus diisi!',
             'amount.required'      => 'Jumlah harus diisi!',
             'date.required'        => 'Waktu harus diisi!',
+            'description.required' => 'Keterangan harus diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -98,7 +97,6 @@ class MoneyController extends Controller
                 [
                     'id_users'    => $this->session['id_users'],
                     'id_category' => $request->id_category,
-                    'name'        => $request->name,
                     'amount'      => remove_separator($request->amount),
                     'description' => $request->description,
                     'date'        => $request->date,

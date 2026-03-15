@@ -15,10 +15,12 @@ class StartCommand
             'text'       => "👋 Halo, *{$user->nama}*!\n\n" .
                 "Selamat datang di *MoneyLog Bot* 💰\n\n" .
                 "*Format catat transaksi:*\n" .
-                "`[kategori] [nominal] [keterangan]`\n\n" .
+                "`[kategori], [nominal], [keterangan]`\n" .
+                "`[kategori], [nominal], [keterangan], [tanggal]`\n\n" .
                 "Contoh:\n" .
-                "`makan 20000 bakso`\n" .
-                "`gaji 5000000 gaji januari`\n\n" .
+                "`makan, 20.000, bakso`\n" .
+                "`House Bills, 100.000, listrik, 2024-01-15`\n\n" .
+                "_Tanggal opsional format: YYYY-MM-DD_\n\n" .
                 "*Command tersedia:*\n" .
                 "/categories → lihat daftar kategori\n",
         ]);
